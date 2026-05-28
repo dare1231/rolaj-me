@@ -399,6 +399,18 @@ nav{background:var(--dark2);border-bottom:1px solid var(--border);position:stick
 .idealni-img:hover{opacity:.9}
 
 /* NEWSLETTER */
+/* NAJCITANIJE */
+.nc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s}
+.nc-item:last-child{border-bottom:none}
+.nc-item:hover{background:var(--dark3)}
+.nc-rank{font-family:"Oswald",sans-serif;font-size:18px;font-weight:700;color:var(--border);min-width:24px;text-align:center;line-height:1}
+.nc-rank.top{color:var(--red)}
+.nc-thumb{width:60px;height:44px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--dark4)}
+.nc-thumb img{width:100%;height:100%;object-fit:cover}
+.nc-info{flex:1;min-width:0}
+.nc-cat{font-family:"Oswald",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+.nc-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 .newsletter{background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:20px 16px;margin-bottom:16px;text-align:center}
 .newsletter h3{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
 .newsletter p{font-size:12px;color:var(--muted);margin-bottom:14px}
@@ -699,6 +711,38 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
       <div class="matches-scroll" id="matchesContainer"></div>
     </div>
 
+
+
+    <!-- SANSABET REKLAMA -->
+    <a href="https://sansabet.com/BonusDobrodoslice2" target="_blank" rel="noopener sponsored" style="display:block;margin:0 0 14px;border-radius:8px;overflow:hidden;text-decoration:none;border:2px solid rgba(255,180,0,0.4);box-shadow:0 4px 20px rgba(255,160,0,0.2);transition:all .2s" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+      <div style="background:linear-gradient(135deg,#f5a623 0%,#e8920a 30%,#f5c842 50%,#e8920a 70%,#f5a623 100%);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;min-height:80px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;left:-20px;width:120px;height:120px;background:rgba(255,255,255,0.08);border-radius:50%"></div>
+        <div style="position:absolute;bottom:-30px;right:100px;width:100px;height:100px;background:rgba(255,255,255,0.06);border-radius:50%"></div>
+        <div style="position:relative;z-index:1">
+          <div style="font-family:'Oswald',sans-serif;font-size:clamp(22px,5vw,34px);font-weight:700;color:#fff;text-shadow:2px 2px 8px rgba(0,0,0,0.4);line-height:1;text-transform:uppercase;letter-spacing:1px">BONUS</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:clamp(14px,3vw,20px);font-weight:700;color:#1a0800;text-transform:uppercase;letter-spacing:1px;margin-top:2px">Dobrodošlice</div>
+        </div>
+        <div style="position:relative;z-index:1;text-align:center">
+          <div style="font-family:'Oswald',sans-serif;font-size:clamp(10px,2vw,12px);color:#1a0800;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;font-style:italic">Deponuj 10€ i osvoji</div>
+          <div style="display:flex;align-items:center;gap:clamp(6px,2vw,12px)">
+            <div style="text-align:center">
+              <div style="font-family:'Oswald',sans-serif;font-size:clamp(22px,5vw,36px);font-weight:700;color:#fff;text-shadow:2px 2px 8px rgba(0,0,0,0.5);line-height:1">15€</div>
+              <div style="font-family:'Oswald',sans-serif;font-size:clamp(9px,1.5vw,11px);font-weight:700;color:#1a0800;letter-spacing:2px;text-transform:uppercase">Freebet</div>
+            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:clamp(18px,4vw,28px);font-weight:700;color:#fff;text-shadow:2px 2px 8px rgba(0,0,0,0.4)">+</div>
+            <div style="text-align:center">
+              <div style="font-family:'Oswald',sans-serif;font-size:clamp(22px,5vw,36px);font-weight:700;color:#fff;text-shadow:2px 2px 8px rgba(0,0,0,0.5);line-height:1">100</div>
+              <div style="font-family:'Oswald',sans-serif;font-size:clamp(9px,1.5vw,11px);font-weight:700;color:#1a0800;letter-spacing:2px;text-transform:uppercase">Spinova</div>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;z-index:1">
+          <div style="background:#1a0800;color:#f5a623;font-family:'Oswald',sans-serif;font-size:clamp(11px,2vw,14px);font-weight:700;letter-spacing:1px;padding:clamp(8px,2vw,12px) clamp(10px,2vw,18px);border-radius:6px;text-transform:uppercase;border:2px solid rgba(255,255,255,0.3);white-space:nowrap">Iskoristi →</div>
+        </div>
+      </div>
+    </a>
+
+
     <div class="main">
       <div class="content">
         <div class="news-section reveal">
@@ -711,6 +755,14 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
         </div>
       </div>
       <div class="sidebar">
+
+        <!-- WIDGET: NAJCITANIJE VIJESTI -->
+        <div class="sw reveal" id="najcitanijeWidget">
+          <div class="sw-head">
+            <span class="sw-title">🔥 Najčitanije Vijesti</span>
+          </div>
+          <div id="najcitanijeBody" style="padding:8px 0"></div>
+        </div>
 
         <!-- WIDGET: 36. KOLO REZULTATI -->
         <div class="kolo-widget reveal">
@@ -1175,6 +1227,7 @@ async function loadWPPosts(){
   renderHomeNews();renderPgNews();
   if(wpPosts.length>0)updateSliderWithWPPosts();
   renderNotifications(wpPosts);
+  renderNajcitanije();
 }
 function updateSliderWithWPPosts(){
   slidesData=wpPosts.slice(0,6).map(p=>({cat:p.k||'📰 VIJEST',title:p.t,img:p.i,link:p.l}));
@@ -1359,6 +1412,27 @@ sw2.addEventListener("mouseleave",()=>startAuto());
 // REVEAL
 const revObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");revObs.unobserve(e.target);}});},{threshold:0.08,rootMargin:"0px 0px -30px 0px"});
 document.querySelectorAll(".reveal").forEach(el=>revObs.observe(el));
+
+
+function renderNajcitanije(){
+  var el=document.getElementById("najcitanijeBody");
+  if(!el)return;
+  var vijesti=wpPosts&&wpPosts.length>0?wpPosts:STATIC_NEWS;
+  var top5=vijesti.slice(0,5);
+  var html="";
+  for(var i=0;i<top5.length;i++){
+    var v=top5[i];
+    var rankClass=i<3?"top":"";
+    html+='<div class="nc-item" onclick="window.open(\''+v.l+'\',\'_blank\')">';
+    html+='<div class="nc-rank '+rankClass+'">'+(i+1)+'</div>';
+    html+='<div class="nc-thumb"><img src="'+v.i+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>';
+    html+='<div class="nc-info">';
+    html+='<div class="nc-cat">'+(v.k||"VIJEST")+'</div>';
+    html+='<div class="nc-title">'+v.t+'</div>';
+    html+='</div></div>';
+  }
+  el.innerHTML=html;
+}
 
 function subscribeNewsletter(){const e=document.getElementById('nlEmail');if(e&&e.value)alert('Hvala! Pretplaćen si na newsletter.');}
 
