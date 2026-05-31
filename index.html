@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bs">
 <head>
@@ -593,6 +592,40 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
 .slider-wrap { touch-action: pan-y; }
 .matches-scroll { touch-action: pan-x; }
 .scores-tabs, .cat-tabs, .tr-tabs, .lgswitch { touch-action: pan-x; }
+
+/* TRANSFER BAR SCROLL WRAPPER */
+.tr-bar-wrap{position:relative;margin:10px 0 4px}
+.tr-bar-scroll{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;scroll-behavior:smooth}
+.tr-bar-scroll::-webkit-scrollbar{display:none}
+.tr-bar-arrow{position:absolute;top:50%;transform:translateY(-60%);z-index:5;background:var(--dark2);border:1px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.tr-bar-arrow:hover{background:var(--red);border-color:var(--red);color:#fff}
+.tr-bar-arrow.left{left:-4px}
+.tr-bar-arrow.right{right:-4px}
+@media(max-width:767px){.tr-bar-arrow{display:none}}
+
+/* SIDEBAR TRANSFER WIDGET */
+.sw-tr-scroll{max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sw-tr-scroll::-webkit-scrollbar{width:3px}
+.sw-tr-scroll::-webkit-scrollbar-track{background:transparent}
+.sw-tr-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sw-tr-tabs{display:flex;border-bottom:1px solid var(--border)}
+.sw-tr-tab{flex:1;font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 4px;text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.sw-tr-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.sw-tr-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .2s}
+.sw-tr-item:last-child{border-bottom:none}
+.sw-tr-item:hover{background:var(--dark3)}
+.sw-tr-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:var(--dark4);border:2px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:10px;font-weight:700;color:var(--muted)}
+.sw-tr-av img{width:100%;height:100%;object-fit:cover}
+.sw-tr-info{flex:1;min-width:0}
+.sw-tr-name{font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-tr-det{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-tr-badge{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;font-weight:700;flex-shrink:0;white-space:nowrap}
+.sw-tr-free{background:rgba(0,200,81,.15);color:var(--green);border:1px solid rgba(0,200,81,.3)}
+.sw-tr-contract{background:rgba(26,127,255,.15);color:var(--blue);border:1px solid rgba(26,127,255,.3)}
+.sw-tr-rumour{background:rgba(245,166,35,.15);color:var(--gold);border:1px solid rgba(245,166,35,.3)}
+.sw-tr-transfer{background:rgba(204,0,0,.15);color:var(--red);border:1px solid rgba(204,0,0,.3)}
+.sw-tr-more{display:block;text-align:center;padding:9px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);border-top:1px solid var(--border);cursor:pointer;transition:background .2s}
+.sw-tr-more:hover{background:var(--dark3)}
 </style>
 </head>
 <body>
@@ -668,40 +701,46 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
   <div class="hero">
-    <div class="hero-row">
-      <div class="slider-wrap" id="sliderWrap">
-        <div class="slider-track" id="sliderTrack"></div>
-        <button class="slider-btn slider-prev" id="sliderPrev">‹</button>
-        <button class="slider-btn slider-next" id="sliderNext">›</button>
-        <div class="slider-dots" id="sliderDots"></div>
-        <div class="slider-progress" id="sliderProgress"></div>
-      </div>
-      <div class="hero-transfer-panel">
-        <div class="htp-head">🔄 <span>TRANSFERI</span></div>
-        <div class="htp-item" onclick="go('transferi')">
-          <div class="htp-av" id="htpRudovicAv"></div>
-          <div class="htp-info"><div class="htp-name">Adrijan Rudović</div><div class="htp-det">Stoper · 30g · Slobodan igrač</div></div>
-          <span class="htp-badge free">Slobodan</span>
-        </div>
-        <div class="htp-item" onclick="go('transferi')">
-          <div class="htp-av" id="htpStesevicAv"></div>
-          <div class="htp-info"><div class="htp-name">Vesko Stešević</div><div class="htp-det">Trener · FK Mornar Bar</div></div>
-          <span class="htp-badge contract">Produžio</span>
-        </div>
-        <div class="htp-item" onclick="go('transferi')">
-          <div class="htp-av" id="htpPetovicAv"></div>
-          <div class="htp-info"><div class="htp-name">Gojko Petović</div><div class="htp-det">Arsenal Tivat → Češka 1. liga?</div></div>
-          <span class="htp-badge rumour">🔥 Glasina</span>
-        </div>
-        <div class="htp-item" onclick="go('transferi')">
-          <div class="htp-av" id="htpKovinicAv"></div>
-          <div class="htp-info"><div class="htp-name">Neđeljko Kovinić</div><div class="htp-det">Arsenal Tivat → Češka 1. liga?</div></div>
-          <span class="htp-badge rumour">🔥 Glasina</span>
-        </div>
-        <button class="htp-more" onclick="go('transferi')">Svi transferi →</button>
+    <!-- HERO FOTO -->
+    <div id="heroWrap" style="position:relative;overflow:hidden;border-radius:8px;background:var(--dark3);width:100%;height:420px;cursor:pointer" onclick="openVijest(0)">
+      <img id="heroImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center 15%">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.97) 0%,rgba(0,0,0,.4) 50%,transparent 100%)"></div>
+      <div style="position:absolute;top:12px;left:12px;background:var(--red);font-family:Oswald,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:3px 10px;border-radius:2px;display:flex;align-items:center;gap:6px"><div class="lpulse"></div>Vijest Dana</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:30px 20px 24px">
+        <div id="heroCat" style="font-family:Oswald,sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;background:rgba(0,0,0,.55);padding:3px 10px;border-radius:3px;display:inline-block;margin-bottom:8px"></div>
+        <div id="heroTitle" style="font-family:Oswald,sans-serif;font-size:28px;font-weight:700;line-height:1.2;color:#fff;margin-bottom:12px;text-shadow:0 2px 10px rgba(0,0,0,.9)"></div>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,.15);color:var(--gold);padding:5px 14px;border-radius:3px;border:1px solid rgba(245,166,35,.35);font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase">Pročitaj →</span>
       </div>
     </div>
-  </div>
+    <!-- TRANSFER BAR -->
+    <div class="tr-bar-wrap">
+      <button class="tr-bar-arrow left" onclick="trBarScroll(-1)" aria-label="Scroll lijevo">‹</button>
+      <div class="tr-bar-scroll" id="trBarScroll">
+        <div onclick="go('transferi')" style="flex:0 0 auto;display:flex;align-items:center;gap:9px;background:var(--dark2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer">
+          <div id="htpRudovicAv" style="width:32px;height:32px;border-radius:50%;background:var(--dark4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:10px;font-weight:700;color:var(--muted);overflow:hidden;flex-shrink:0">AR</div>
+          <div><div style="font-family:Oswald,sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Adrijan Rudović</div><div style="font-size:10px;color:var(--muted);white-space:nowrap">Stoper · Slobodan igrač</div></div>
+          <span style="background:rgba(0,200,81,.15);color:var(--green);border:1px solid rgba(0,200,81,.3);font-family:Oswald,sans-serif;font-size:8px;padding:2px 7px;border-radius:3px;font-weight:700;flex-shrink:0">Slobodan</span>
+        </div>
+        <div onclick="go('transferi')" style="flex:0 0 auto;display:flex;align-items:center;gap:9px;background:var(--dark2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer">
+          <div id="htpStesevicAv" style="width:32px;height:32px;border-radius:50%;background:var(--dark4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:10px;font-weight:700;color:var(--muted);overflow:hidden;flex-shrink:0">VS</div>
+          <div><div style="font-family:Oswald,sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Vesko Stešević</div><div style="font-size:10px;color:var(--muted);white-space:nowrap">Trener · FK Mornar Bar</div></div>
+          <span style="background:rgba(26,127,255,.15);color:var(--blue);border:1px solid rgba(26,127,255,.3);font-family:Oswald,sans-serif;font-size:8px;padding:2px 7px;border-radius:3px;font-weight:700;flex-shrink:0">Produžio</span>
+        </div>
+        <div onclick="go('transferi')" style="flex:0 0 auto;display:flex;align-items:center;gap:9px;background:var(--dark2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer">
+          <div id="htpPetovicAv" style="width:32px;height:32px;border-radius:50%;background:var(--dark4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:10px;font-weight:700;color:var(--muted);overflow:hidden;flex-shrink:0">GP</div>
+          <div><div style="font-family:Oswald,sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Gojko Petović</div><div style="font-size:10px;color:var(--muted);white-space:nowrap">Arsenal Tivat → Češka 1?</div></div>
+          <span style="background:rgba(245,166,35,.15);color:var(--gold);border:1px solid rgba(245,166,35,.3);font-family:Oswald,sans-serif;font-size:8px;padding:2px 7px;border-radius:3px;font-weight:700;flex-shrink:0">🔥 Glasina</span>
+        </div>
+        <div onclick="go('transferi')" style="flex:0 0 auto;display:flex;align-items:center;gap:9px;background:var(--dark2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer">
+          <div id="htpKovinicAv" style="width:32px;height:32px;border-radius:50%;background:var(--dark4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:10px;font-weight:700;color:var(--muted);overflow:hidden;flex-shrink:0">NK</div>
+          <div><div style="font-family:Oswald,sans-serif;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Neđeljko Kovinić</div><div style="font-size:10px;color:var(--muted);white-space:nowrap">Arsenal Tivat → Češka 1?</div></div>
+          <span style="background:rgba(245,166,35,.15);color:var(--gold);border:1px solid rgba(245,166,35,.3);font-family:Oswald,sans-serif;font-size:8px;padding:2px 7px;border-radius:3px;font-weight:700;flex-shrink:0">🔥 Glasina</span>
+        </div>
+        <div onclick="go('transferi')" style="flex:0 0 auto;display:flex;align-items:center;background:var(--gold);color:#000;border-radius:6px;padding:8px 16px;cursor:pointer;font-family:Oswald,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">🔄 Svi transferi →</div>
+      </div>
+      <button class="tr-bar-arrow right" onclick="trBarScroll(1)" aria-label="Scroll desno">›</button>
+    </div>
+  </div><!-- /hero -->
 
   <div class="wrap">
     <div class="scores-bar reveal">
@@ -757,6 +796,21 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
       </div>
       <div class="sidebar">
 
+        <!-- WIDGET: TRANSFERI -->
+        <div class="sw reveal" id="trSideWidget">
+          <div class="sw-head" style="background:linear-gradient(135deg,var(--dark3),#1a0800)">
+            <span class="sw-title" style="color:var(--gold)">🔄 Transferi & Slobodni</span>
+            <span class="sw-more" onclick="go('transferi')">Svi →</span>
+          </div>
+          <div class="sw-tr-tabs">
+            <div class="sw-tr-tab on" onclick="switchSwTrTab('transferi',this)">Transf.</div>
+            <div class="sw-tr-tab" onclick="switchSwTrTab('slobodni',this)">Slobodni</div>
+            <div class="sw-tr-tab" onclick="switchSwTrTab('glasine',this)">🔥 Glasine</div>
+          </div>
+          <div class="sw-tr-scroll" id="swTrContent"></div>
+          <div class="sw-tr-more" onclick="go('transferi')">Pogledaj sve transfere →</div>
+        </div>
+
         <!-- WIDGET: NAJCITANIJE VIJESTI -->
         <div class="sw reveal" id="najcitanijeWidget">
           <div class="sw-head">
@@ -808,47 +862,7 @@ footer{background:var(--dark2);border-top:1px solid var(--border)}
           <div style="padding:12px 16px" id="scorersBody"></div>
         </div>
 
-        <!-- TRANSFER WIDGET -->
-        <div class="tr-home-widget reveal">
-          <div class="sw-head">
-            <span class="sw-title">🔄 Transferi & Slobodni</span>
-            <span class="sw-more" onclick="go('transferi')">Više →</span>
-          </div>
-          <div>
-            <div class="trw-item" onclick="go('transferi')">
-              <div class="trw-av df">AR</div>
-              <div class="trw-info">
-                <div class="trw-name">Adrijan Rudović</div>
-                <div class="trw-detail">Stoper · 30g · Prishtina e Re</div>
-              </div>
-              <span class="trw-badge trw-free">Slobodan</span>
-            </div>
-            <div class="trw-item" onclick="go('transferi')">
-              <div class="trw-av coach">VS</div>
-              <div class="trw-info">
-                <div class="trw-name">Vesko Stešević</div>
-                <div class="trw-detail">Trener · FK Mornar Bar</div>
-              </div>
-              <span class="trw-badge trw-contract">Produžio</span>
-            </div>
-            <div class="trw-item" onclick="go('transferi')">
-              <div class="trw-av fw">GP</div>
-              <div class="trw-info">
-                <div class="trw-name">Gojko Petović</div>
-                <div class="trw-detail">Arsenal Tivat → Češka 1. liga?</div>
-              </div>
-              <span class="trw-badge trw-rumour">🔥 Glasina</span>
-            </div>
-            <div class="trw-item" onclick="go('transferi')">
-              <div class="trw-av fw">NK</div>
-              <div class="trw-info">
-                <div class="trw-name">Neđeljko Kovinić</div>
-                <div class="trw-detail">Arsenal Tivat → Češka 1. liga?</div>
-              </div>
-              <span class="trw-badge trw-rumour">🔥 Glasina</span>
-            </div>
-          </div>
-        </div>
+
 
         <div class="sw reveal">
           <div class="sw-head"><span class="sw-title">⭐ Idealni Tim 34. Kola</span><a href="https://www.rolaj-me.com" target="_blank" class="sw-more">Više →</a></div>
@@ -1227,6 +1241,7 @@ async function loadWPPosts(){
   wpPosts=posts&&posts.length>0?posts:STATIC_NEWS;
   renderHomeNews();renderPgNews();
   if(wpPosts.length>0)updateSliderWithWPPosts();
+  initHeroSingle();
   renderNotifications(wpPosts);
   renderNajcitanije();
 }
@@ -1376,7 +1391,7 @@ function renderPgNews(){renderCats("catTabsPage","page");const el=document.getEl
 
 // SLIDER
 let si=0,slIntvl=null,slP=0,drag=false,dX=0,dD=0;
-function initSlider(){
+function initSlider(){if(!document.getElementById("sliderWrap"))return;
   if(slidesData.length===0){slidesData=[{cat:"🏆 ŠAMPION 1.CFL 2025/26",title:"SUTJESKA OSVAJA TITULU! Nikšićani pobjedom nad Jedinstvo Francom 3:1 postaju prvaci Crne Gore",img:"https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=85",link:"https://www.rolaj-me.com"},{cat:"🔄 TRANSFER",title:"Adrijan Rudović slobodan igrač — Iskusni stoper traži novi klub nakon Prishtine e Re",img:"https://www.rolaj-me.com/wp-content/uploads/2026/05/imageedit_1_7422185843.jpg",link:"https://www.rolaj-me.com/iskusni-defanzivac-adrijan-rudovic-napustio-prishtinu-trazi-novi-klub/"},{cat:"🔥 GLASINA",title:"Petović i Kovinić iz Arsenala Tivat na meti klubova iz Češke Prve lige!",img:"https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=1200&q=85",link:"https://www.rolaj-me.com"}];}
   const track=document.getElementById("sliderTrack");
   const dots=document.getElementById("sliderDots");
@@ -1399,16 +1414,18 @@ function startAuto(){
   slIntvl=setInterval(()=>{slP+=100/(5000/100);const pp=document.getElementById("sliderProgress");if(pp)pp.style.width=Math.min(slP,100)+"%";if(slP>=100){slP=0;goSlide(si+1,false);if(pp)pp.style.width="0%";}},100);
 }
 const sw2=document.getElementById("sliderWrap");
-document.getElementById("sliderPrev").addEventListener("click",e=>{e.stopPropagation();goSlide(si-1);});
-document.getElementById("sliderNext").addEventListener("click",e=>{e.stopPropagation();goSlide(si+1);});
-sw2.addEventListener("mousedown",e=>{drag=true;dX=e.clientX;dD=0;});
-sw2.addEventListener("mousemove",e=>{if(drag)dD=e.clientX-dX;});
-sw2.addEventListener("mouseup",()=>{if(drag){if(dD<-40)goSlide(si+1);else if(dD>40)goSlide(si-1);}drag=false;});
-sw2.addEventListener("touchstart",e=>{dX=e.touches[0].clientX;dD=0;},{passive:true});
-sw2.addEventListener("touchmove",e=>{dD=e.touches[0].clientX-dX;},{passive:true});
-sw2.addEventListener("touchend",()=>{if(dD<-40)goSlide(si+1);else if(dD>40)goSlide(si-1);});
-sw2.addEventListener("mouseenter",()=>clearInterval(slIntvl));
-sw2.addEventListener("mouseleave",()=>startAuto());
+if(sw2){
+  document.getElementById("sliderPrev").addEventListener("click",e=>{e.stopPropagation();goSlide(si-1);});
+  document.getElementById("sliderNext").addEventListener("click",e=>{e.stopPropagation();goSlide(si+1);});
+  sw2.addEventListener("mousedown",e=>{drag=true;dX=e.clientX;dD=0;});
+  sw2.addEventListener("mousemove",e=>{if(drag)dD=e.clientX-dX;});
+  sw2.addEventListener("mouseup",()=>{if(drag){if(dD<-40)goSlide(si+1);else if(dD>40)goSlide(si-1);}drag=false;});
+  sw2.addEventListener("touchstart",e=>{dX=e.touches[0].clientX;dD=0;},{passive:true});
+  sw2.addEventListener("touchmove",e=>{dD=e.touches[0].clientX-dX;},{passive:true});
+  sw2.addEventListener("touchend",()=>{if(dD<-40)goSlide(si+1);else if(dD>40)goSlide(si-1);});
+  sw2.addEventListener("mouseenter",()=>clearInterval(slIntvl));
+  sw2.addEventListener("mouseleave",()=>startAuto());
+}
 
 // REVEAL
 const revObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");revObs.unobserve(e.target);}});},{threshold:0.08,rootMargin:"0px 0px -30px 0px"});
@@ -1510,7 +1527,9 @@ window.addEventListener("DOMContentLoaded",()=>{
   renderRes(1);renderFullTbl(1);renderScr(1);
   switchLeague(1);renderCats("catTabs","home");renderCats("catTabsPage","page");
   renderTransferi();
+  renderSwTr();
   loadWPPosts().catch(()=>{});
+  initHeroSingle();
   // Set hero transfer panel avatars
   setHTPAvatar('htpRudovicAv', FREE_DATA[0]?.foto, 'AR');
   setHTPAvatar('htpStesevicAv', TR_DATA[0]?.foto, 'VS');
@@ -1525,11 +1544,74 @@ function setHTPAvatar(id, foto, initials){
   else{el.textContent=initials;}
 }
 
+// HERO SINGLE
+function initHeroSingle(){
+  const posts=(wpPosts&&wpPosts.length)?wpPosts:STATIC_NEWS;
+  if(!posts||!posts.length)return;
+  const p=posts[0];
+  const img=document.getElementById('heroImg');
+  const title=document.getElementById('heroTitle');
+  const cat=document.getElementById('heroCat');
+  if(img&&p.i)img.src=p.i;
+  if(title)title.textContent=p.t||'';
+  if(cat)cat.textContent=p.k||'Vijest';
+}
+
 // Scroll progress
 window.addEventListener('scroll',()=>{
   const sp=document.getElementById('scrollProgress');
   if(sp){const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;sp.style.width=Math.min(pct,100)+'%';}
 });
+
+// TRANSFER BAR ARROWS
+function trBarScroll(dir){
+  const el=document.getElementById('trBarScroll');
+  if(el)el.scrollBy({left:dir*220,behavior:'smooth'});
+}
+
+// SIDEBAR TRANSFER WIDGET
+let curSwTrTab='transferi';
+function switchSwTrTab(tab,btn){
+  curSwTrTab=tab;
+  document.querySelectorAll('.sw-tr-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderSwTr();
+}
+function renderSwTr(){
+  const el=document.getElementById('swTrContent');
+  if(!el)return;
+  if(curSwTrTab==='transferi'){
+    if(!TR_DATA||TR_DATA.length===0){
+      el.innerHTML='<div style="padding:20px;text-align:center;color:var(--dim);font-size:12px">Nema transfera za sada</div>';return;
+    }
+    el.innerHTML=TR_DATA.map(t=>{
+      const av=t.foto?`<img src="${t.foto}" alt="">`:`<span>${t.av}</span>`;
+      const badgeCls=t.tip==='produzenje'?'sw-tr-contract':t.tip==='posudba'?'sw-tr-rumour':'sw-tr-transfer';
+      const badgeTxt=t.tip==='produzenje'?'Produžio':t.tip==='posudba'?'Posudba':'Transfer';
+      const det=t.tip==='produzenje'?`${t.iz} · +1 god`:`${t.iz} → ${t.u}`;
+      return`<div class="sw-tr-item" onclick="go('transferi')"><div class="sw-tr-av">${av}</div><div class="sw-tr-info"><div class="sw-tr-name">${t.ime}</div><div class="sw-tr-det">${det}</div></div><span class="sw-tr-badge ${badgeCls}">${badgeTxt}</span></div>`;
+    }).join('');
+  } else if(curSwTrTab==='slobodni'){
+    if(!FREE_DATA||FREE_DATA.length===0){
+      el.innerHTML='<div style="padding:20px;text-align:center;color:var(--dim);font-size:12px">Nema slobodnih igrača</div>';return;
+    }
+    el.innerHTML=FREE_DATA.map(p=>{
+      const av=p.foto?`<img src="${p.foto}" alt="">`:`<span>${p.av}</span>`;
+      return`<div class="sw-tr-item" onclick="go('transferi')"><div class="sw-tr-av">${av}</div><div class="sw-tr-info"><div class="sw-tr-name">${p.ime}</div><div class="sw-tr-det">${p.zadnji} · ${p.pos}</div></div><span class="sw-tr-badge sw-tr-free">${p.starost}g</span></div>`;
+    }).join('');
+  } else {
+    if(!GLASINE_DATA||GLASINE_DATA.length===0){
+      el.innerHTML='<div style="padding:20px;text-align:center;color:var(--dim);font-size:12px">Nema glasina</div>';return;
+    }
+    const lkCls={hot:'sw-tr-transfer',med:'sw-tr-rumour',low:'sw-tr-contract'};
+    const lkTxt={hot:'🔥 Vruće',med:'⚡ Moguće',low:'💬 Glasina'};
+    el.innerHTML=GLASINE_DATA.map(g=>{
+      const foto=g.foto_petovic||g.foto_kovinic||'';
+      const av=foto?`<img src="${foto}" alt="">`:`<span>?</span>`;
+      return`<div class="sw-tr-item" onclick="go('transferi')"><div class="sw-tr-av">${av}</div><div class="sw-tr-info"><div class="sw-tr-name">${g.naslov}</div><div class="sw-tr-det">${g.izvor} · ${g.datum}</div></div><span class="sw-tr-badge ${lkCls[g.vjero]}">${lkTxt[g.vjero]}</span></div>`;
+    }).join('');
+  }
+}
 </script>
 </body>
 </html>
