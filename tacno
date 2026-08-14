@@ -1,1 +1,1 @@
- [build] functions = "netlify/functions" publish = "." [[redirects]] from = "/api/news" to = "/.netlify/functions/get-news" status = 200
+
