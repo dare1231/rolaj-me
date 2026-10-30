@@ -239,6 +239,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text-primary);over
 .player-info{flex:1;min-width:0}
 .player-name{font-size:14px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .player-club{font-size:11px;color:var(--text-tertiary);font-weight:600}
+.player-photo-credit{font-size:9px;color:var(--text-tertiary);opacity:.7;margin-top:1px}
 .player-fav-btn{font-size:22px;cursor:pointer;background:none;border:none;flex-shrink:0}
 .club-card{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border-radius:14px;margin-bottom:8px;border:1px solid var(--border);cursor:pointer}
 .club-card-logo{width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--surface-elevated);border:1px solid var(--border);flex-shrink:0}
@@ -1614,6 +1615,7 @@ function toggleFavClub(name){
 
 /* ========== OMILJENI IGRAČI ========== */
 const POS_LABEL={GK:'Golman',DEF:'Odbrana',MID:'Vezni red',FWD:'Napad',PL:'Igrač'};
+const PHOTO_CREDIT={'Budućnost':'Foto: FK Budućnost','Mornar':'Foto: FK Mornar'};
 function getPlayerPhoto(name){
   const custom=safeGet('rolajme_player_photo_'+encodeURIComponent(name));
   if(custom)return custom;
@@ -1623,6 +1625,7 @@ function getPlayerPhoto(name){
 function playerCardHtml(p){
   const photo=getPlayerPhoto(p.name);
   const isFav=favPlayers.includes(p.name);
+  const credit=photo&&photo===p.photo&&photo.startsWith('img/igraci/')?PHOTO_CREDIT[p.club]:null;
   const safeId='ph_'+p.name.replace(/[^a-zA-Z0-9]/g,'')+'_'+Math.random().toString(36).slice(2,7);
   const photoHtml=photo
     ?`<img class="player-photo" src="${photo}" alt="${p.name}">`
@@ -1636,6 +1639,7 @@ function playerCardHtml(p){
     <div class="player-info">
       <div class="player-name">${p.name}</div>
       <div class="player-club">${p.club} · ${POS_LABEL[p.pos]||''}</div>
+      ${credit?`<div class="player-photo-credit">${credit}</div>`:''}
     </div>
     <button class="player-fav-btn" onclick="toggleFavPlayer('${p.name.replace(/'/g,"\\'")}')">${isFav?'⭐':'☆'}</button>
   </div>`;
