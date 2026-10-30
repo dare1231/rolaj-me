@@ -1,0 +1,104 @@
+[
+ {
+  "name": "Radoš Dubljević",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/rados-dubljevic.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Stefan Popović",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/stefan-popovic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Jovan Baošić",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/jovan-baosic.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Jovan Dašić",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/jovan-dasic.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Darko Zorić",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/darko-zoric.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Bogić Milošević",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/bogic-milosevic.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Lazar Zlatičanin",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/lazar-zlaticanin.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Mitar Ćuković",
+  "club": "Mornar",
+  "photo": "img/igraci/mornar/mitar-cukovic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Simon Sošić",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/simon-sosic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Matija Jovanović",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/matija-jovanovic.jpg",
+  "source": "klub"
+ },
+ {
+  "name": "Zarija Mugoša",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/zarija-mugosa.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Luka Brajović",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/luka-brajovic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Stefan Radojević",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/stefan-radojevic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Neđeljko Kovinić",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/nedjeljko-kovinic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Petar Jašović",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/petar-jasovic.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Sharif Osman",
+  "club": "Budućnost",
+  "photo": "img/igraci/buducnost/sharif-osman.jpg",
+  "source": "fscg"
+ },
+ {
+  "name": "Vladimir Boljević",
+  "club": "Zeta",
+  "photo": "img/igraci/zeta/vladimir-boljevic.jpg",
+  "source": "fscg"
+ }
+]
