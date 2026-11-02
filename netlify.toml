@@ -1,0 +1,84 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+# Adresa baze je javna (mora biti u aplikaciji) - ne tretirati je kao tajnu
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,KLUBOVI_SUPABASE_URL"
+
+[[edge_functions]]
+  path = "/*"
+  function = "og-prerender"
+
+# SEO: profili klubova (/klub/naziv), pregled klubova (/klubovi) i sitemap.xml
+[[edge_functions]]
+  path = "/klub/*"
+  function = "klub-seo"
+
+[[edge_functions]]
+  path = "/klubovi"
+  function = "klub-seo"
+
+[[edge_functions]]
+  path = "/sitemap.xml"
+  function = "klub-seo"
+
+[[redirects]]
+  from = "/klub/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/klubovi"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/news"
+  to = "/.netlify/functions/get-news"
+  status = 200
+
+[[redirects]]
+  from = "/api/ai-report"
+  to = "/.netlify/functions/ai-report"
+  status = 200
+
+[[redirects]]
+  from = "/api/live-event"
+  to = "/.netlify/functions/live-event"
+  status = 200
+
+[[redirects]]
+  from = "/api/send-notification"
+  to = "/.netlify/functions/send-notification"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-player-photo"
+  to = "/.netlify/functions/admin-player-photo"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-news"
+  to = "/.netlify/functions/admin-news"
+  status = 200
+
+[functions."check-news"]
+  schedule = "*/10 * * * *"
+
+# FSCG mlađe lige + Treća liga (Centar/Sjever/Jug): poziva se svakih 10 minuta, ali (fix35) kratki krug radi
+# samo JEDAN upit (ima li mečeva koji su stigli na red); pun pregled svih liga je svaka 3 sata (00,03,06... UTC).
+[functions."fscg-auto-sync"]
+  schedule = "*/10 * * * *"
+
+# Reprezentacije: 3 puta dnevno (UTC) = 08:00, 16:00 i 22:00 po crnogorskom ljetnjem vremenu.
+# Poslije 25.10. (zimsko vrijeme) isto je 07:00, 15:00 i 21:00.
+[functions."fscg-reprezentacija-sync"]
+  schedule = "2 6,14,20 * * *"
+
+# (jutarnje dodatno pokretanje ukinuto — ovo se i dalje može pokrenuti ručno)
+[functions."fscg-reprezentacija-sync-jutro"]
+
+# 1. i 2. CFL: automatski upis završenih utakmica u live_events (sastav, golovi, kartoni, izmjene, kraj)
+[functions."senior-auto-sync"]
+  schedule = "7,37 * * * *"

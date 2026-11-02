@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ROLaj ME · Generator izvještaja</title>
+<style>
+:root{--bg:#fff4f8;--card:#fff;--ink:#1d1520;--mut:#7a6772;--line:#f1d3e0;--acc:#e0156f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 2px}.mut{color:var(--mut);font-size:13px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px}
+textarea,input{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink)}
+textarea#src{height:120px;font:12px/1.4 ui-monospace,monospace}
+textarea#txt{height:220px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+button{font:600 14px/1 inherit;padding:12px 16px;border-radius:999px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+button.alt{background:#fff;color:var(--acc)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+iframe{width:100%;height:900px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.msg{margin-top:8px;font-weight:600}.err{color:#c8102e}.ok{color:#12805c}
+@media(max-width:860px){.grid{grid-template-columns:1fr}iframe{height:700px}}
+</style>
+</head>
+<body>
+<main>
+<h1>Generator izvještaja</h1>
+<div class="mut">Otvori utakmicu na fscg.me → desni klik → „Prikaži izvor stranice“ (ili Ctrl+U) → kopiraj sve → zalijepi ovdje.</div>
+
+<div class="box">
+  <label for="src">1. HTML zapisnika sa FSCG-a</label>
+  <textarea id="src" placeholder="Zalijepi ovdje cijeli HTML stranice utakmice sa fscg.me"></textarea>
+  <div class="btns"><button id="go">Napravi izvještaj</button></div>
+  <div id="msg" class="msg"></div>
+</div>
+
+<div id="edit" class="grid" hidden>
+  <div class="box">
+    <label for="txt">2. Tekst (svaki pasus odvoji praznim redom — slobodno mijenjaj i dopiši izjavu)</label>
+    <textarea id="txt"></textarea>
+    <label for="det">⚡ Detalj utakmice (ostavi prazno ako ne treba)</label>
+    <input id="det">
+    <label for="nxt">Na tabeli / sljedeće kolo</label>
+    <input id="nxt">
+    <div class="btns">
+      <button id="refresh" class="alt">Osvježi pregled</button>
+      <button id="copyTabs">Kopiraj HTML (tabovi)</button>
+      <button id="copyFlat" class="alt">Kopiraj bez tabova (drugi sajtovi)</button>
+      <button id="dl" class="alt">Preuzmi .html</button>
+    </div>
+    <div id="msg2" class="msg"></div>
+  </div>
+  <div class="box"><label>Pregled</label><iframe id="prev" title="Pregled izvještaja"></iframe></div>
+</div>
+</main>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clean=s=>String(s||'').replace(/\s+/g,' ').trim();
+let M=null;
+
+/* ---------- PARSIRANJE FSCG ZAPISNIKA ---------- */
+function minParse(t){const m=String(t).match(/(\d{1,3})\s*'?\s*(?:\+\s*(\d{1,2}))?/);if(!m)return null;const b=+m[1],x=m[2]?+m[2]:0;return{b,x,key:b*100+x,txt:x?b+'+'+x+"'":b+"'"};}
+function cellName(td){if(!td)return '';const c=td.cloneNode(true);c.querySelectorAll('ul').forEach(u=>u.remove());return clean(c.textContent);}
+function cellEvents(td){const out=[];if(!td)return out;td.querySelectorAll('ul.events li').forEach(li=>{const m=minParse(li.textContent);if(m)out.push({cls:(li.className||'').toLowerCase(),m});});return out;}
+function parse(html){
+  const d=new DOMParser().parseFromString(html,'text/html');
+  const uls=d.querySelectorAll('.matchData ul');
+  if(!uls.length||!d.querySelector('table.teams'))throw new Error('Ovo ne liči na zapisnik utakmice sa fscg.me.');
+  const l1=[...uls[0].querySelectorAll('li')].map(li=>clean(li.textContent));
+  const l2=uls[1]?[...uls[1].querySelectorAll('li')].map(li=>clean(li.textContent)):[];
+  const compRaw=l1[0]||'';
+  const comp=compRaw.replace(/\s*\d{2}\/\d{2}\s*$/,'').replace(/(\d)\.\s*CFL/,'$1. CFL');
+  const round=(l1.find(t=>/kolo/i.test(t))||'').replace(/\D+$/,'').trim();
+  const venue=l1[2]||'';
+  const date=l2.find(t=>/\d{2}\.\d{2}\.\d{4}/.test(t))||'';
+  const time=l2.find(t=>/^\d{1,2}:\d{2}$/.test(t))||'';
+  const att=((l2.find(t=>/gledala/i.test(t))||'').match(/\d[\d.]*/)||[''])[0];
+  const home=clean((d.querySelector('.club1 .title')||{}).textContent);
+  const away=clean((d.querySelector('.club2 .title')||{}).textContent);
+  const hs=+clean((d.querySelector('.res1')||{}).textContent),as=+clean((d.querySelector('.res2')||{}).textContent);
+  const off=[];const oe=d.querySelector('.officials');
+  if(oe){clean(oe.textContent).replace(/([^:,]+):\s*([^,]+)/g,(_,k,v)=>{off.push([clean(k).replace(/^Match Delegate$/,'Delegat'),clean(v)]);});}
+  const T={home:{start:[],bench:[],coach:''},away:{start:[],bench:[],coach:''}};const ev=[];
+  d.querySelectorAll('table.teams tr').forEach(tr=>{
+    const cls=tr.className||'';const td=tr.querySelectorAll('td');if(td.length<5)return;
+    if(/coaches/.test(cls)){T.home.coach=clean(td[0].textContent);T.away.coach=clean(td[4].textContent);return;}
+    if(!/firstteam|bench/.test(cls))return;
+    [['home',td[0]],['away',td[4]]].forEach(([side,c])=>{
+      const nm=cellName(c);if(!nm||nm==='-')return;
+      const p={name:nm.replace(/\s*\(G\)/g,'').replace(/\s*\(C\)/g,'').trim(),cap:/\(C\)/.test(nm)};
+      (/firstteam/.test(cls)?T[side].start:T[side].bench).push(p);
+      cellEvents(c).forEach(e=>ev.push(Object.assign({side,player:p.name},e)));
+    });
+  });
+  // tabela
+  const table=[];
+  d.querySelectorAll('table.rankings tr').forEach(tr=>{const td=tr.querySelectorAll('td');if(td.length<10)return;table.push({pos:clean(td[0].textContent).replace('.',''),team:clean(td[1].textContent),u:clean(td[2].textContent),gf:clean(td[6].textContent),ga:clean(td[7].textContent),pts:clean(td[9].textContent)});});
+  return {comp,compRaw,round,venue,date,time,att,home,away,hs,as,off,T,ev,table};
+}
+
+/* ---------- OBRADA DOGAĐAJA ---------- */
+function surnames(list){const cnt={};list.forEach(p=>{const s=p.name.split(' ').pop();cnt[s]=(cnt[s]||0)+1;});return n=>{const parts=n.split(' ');const s=parts.pop();return cnt[s]>1&&parts.length?parts[0][0]+'. '+s:s;};}
+function build(m){
+  const sn={home:surnames(m.T.home.start.concat(m.T.home.bench)),away:surnames(m.T.away.start.concat(m.T.away.bench))};
+  const name={home:m.home,away:m.away};
+  const goals=[],cards=[],subsOut=[],subsIn=[];
+  m.ev.forEach(e=>{
+    const c=e.cls;
+    if(/penalty_failed|fail/.test(c))return;
+    if(/own/.test(c)){goals.push({side:e.side==='home'?'away':'home',player:e.player,own:true,m:e.m});return;}
+    if(/goal|penal/.test(c)){goals.push({side:e.side,player:e.player,pen:/penal/.test(c),m:e.m});return;}
+    if(/second_yellow|yellowred/.test(c)){cards.push({side:e.side,player:e.player,t:'red2',m:e.m});return;}
+    if(/red/.test(c)){cards.push({side:e.side,player:e.player,t:'red',m:e.m});return;}
+    if(/yellow/.test(c)){cards.push({side:e.side,player:e.player,t:'y',m:e.m});return;}
+    if(/substitutionout/.test(c))subsOut.push(e);else if(/substitutionin/.test(c))subsIn.push(e);
+  });
+  goals.sort((a,b)=>a.m.key-b.m.key);
+  let h=0,a=0,ht=[0,0],trailed={home:false,away:false};
+  goals.forEach(g=>{g.side==='home'?h++:a++;g.score=h+':'+a;if(g.m.b<=45)ht=[h,a];if(h<a)trailed.home=true;if(a<h)trailed.away=true;});
+  // izmjene po timu i minuti
+  const subs={};
+  subsOut.concat(subsIn).forEach(e=>{const k=e.side+'|'+e.m.key;subs[k]=subs[k]||{side:e.side,m:e.m,out:[],in:[]};(/substitutionout/.test(e.cls)?subs[k].out:subs[k].in).push(e.player);});
+  const subList=Object.values(subs).sort((x,y)=>x.m.key-y.m.key);
+  return {sn,name,goals,cards,subList,ht,trailed};
+}
+
+/* ---------- AUTOMATSKI TEKST ---------- */
+function autoText(m,b){
+  const W=m.hs>m.as?'home':m.hs<m.as?'away':null;const L=W==='home'?'away':'home';
+  const comp=m.comp,kolo=m.round+'. kolu';const mn=g=>(g.m.b+g.m.x)+'.';const who=sd=>sd==='home'?'domaćin '+m.home:'gosti ('+m.away+')';
+  const p=[];
+  if(!W)p.push(`${m.home} i ${m.away} odigrali su ${m.hs}:${m.as} u ${kolo} ${comp}.`);
+  else if(W==='home')p.push(`Domaćin ${m.home} slavio je protiv gostujuće ekipe ${m.away} rezultatom ${m.hs}:${m.as} u ${kolo} ${comp}.`);
+  else p.push(`Gostujuća ekipa ${m.away} slavila je kod domaćina ${m.home} rezultatom ${m.as}:${m.hs} u ${kolo} ${comp}.`);
+  if(!b.goals.length)p.push('Utakmica je završena bez golova.');
+  else{
+    const hts=b.ht[0]+':'+b.ht[1];
+    const g0=b.goals[0];
+    let s=b.ht[0]+b.ht[1]===0?'Prvo poluvrijeme završeno je bez golova. ':`Na poluvremenu je bilo ${hts}. `;
+    s+=`Prvi gol postigao je ${g0.player} (${b.name[g0.side]})${g0.own?', autogol':''}${g0.pen?' iz penala':''} u ${mn(g0)} minutu.`;
+    p.push(s);
+    if(b.goals.length>1){
+      const rest=b.goals.slice(1).map(g=>`${g.player} (${b.name[g.side]}${g.own?', autogol':''}${g.pen?', penal':''}) u ${mn(g)} minutu za ${g.score}`);
+      p.push('Golove su zatim postigli: '+rest.join('; ')+'.');
+    }
+    if(W&&b.trailed[W])p.push(W==='home'?'Bio je to preokret: domaćin je gubio, ali je okrenuo rezultat.':'Bio je to preokret: gosti su gubili, ali su okrenuli rezultat.');
+    const last=b.goals[b.goals.length-1];
+    if(W&&last.side===W&&last.m.b>=85&&Math.abs(m.hs-m.as)===1)p.push(`Odlučujući gol pao je u samoj završnici, u ${mn(last)} minutu.`);
+    if(!W&&last.m.b>=85)p.push(`Izjednačenje je stiglo u samoj završnici, u ${mn(last)} minutu.`);
+  }
+  b.cards.filter(c=>c.t!=='y').forEach(c=>p.push(`${c.player} (${b.name[c.side]}) isključen je u ${mn(c)} minutu${c.t==='red2'?', poslije drugog žutog kartona':''}.`));
+  let det='';
+  const red=b.cards.find(c=>c.t!=='y');
+  if(W&&b.trailed[W])det=W==='home'?'Domaćin '+m.home+' je do pobjede stigao preokretom.':'Gosti ('+m.away+') su do pobjede stigli preokretom.';
+  else if(red)det=`Od ${mn(red)} minuta ${red.side==='home'?'domaćin '+m.home+' je igrao':'gosti ('+m.away+') su igrali'} sa igračem manje.`;
+  const tp=s=>m.table.find(r=>r.team.toLowerCase()===String(s).toLowerCase());
+  const th=tp(m.home),ta=tp(m.away);
+  const nxt=(th&&ta)?`${m.home} je ${th.pos}. sa ${th.pts} bodova, ${m.away} ${ta.pos}. sa ${ta.pts}.`:'';
+  return {txt:p.join('\n\n'),det,nxt};
+}
+
+/* ---------- HTML IZVJEŠTAJA ---------- */
+const CSS_TABS=`:root{--bg:#fff4f8;--card:#fff;--ink:#1d1520;--mut:#7a6772;--line:#f1d3e0;--acc:#e0156f;--soft:#f8f9fa;--hl:rgba(224,21,111,.12);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1017;--card:#27161f;--ink:#f6e9ef;--mut:#c6a9b8;--line:#4a2a3b;--soft:#321d29;--hl:rgba(224,21,111,.25)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+main{max-width:960px;margin:0 auto;padding:18px 16px 60px}`;
+const CSS_COMMON=`.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.meta{color:var(--mut);font-size:13px}
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:linear-gradient(135deg,#2a1020,#a80f52);color:#fff;border-radius:12px;padding:22px 14px;text-align:center;margin-top:10px}
+.score>div{min-width:0}.score .t{font-size:clamp(16px,3.6vw,24px);font-weight:700;line-height:1.2}.score .r{font-size:clamp(28px,8vw,48px);font-weight:800}.score .s{font-size:12px;color:#f5c2da;margin-top:3px;line-height:1.4}
+.score .sc{font-size:12px;color:#f5c2da;margin-top:6px;line-height:1.5}
+.sub{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:20px 0;padding:6px 0}
+.sub button{font-family:inherit;height:44px;padding:10px 18px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 14px/1.2 inherit;cursor:pointer}
+.sub button.on{background:var(--acc);color:#fff;border-color:var(--acc);box-shadow:0 4px 8px rgba(224,21,111,.25)}
+.pn{display:none}.pn.on{display:block}
+.tbh{padding:12px 16px;font-weight:700;font-size:15px;background:var(--acc);color:#fff;border-radius:12px 12px 0 0;margin-top:12px}
+.flat .pn{display:block;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;padding:4px 16px 14px}
+.intro{background:var(--bg);border-left:4px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:15px;margin:14px 0 0;line-height:1.6}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 8px;text-align:center;border:0;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink);background:none}
+th{color:var(--mut);font-size:12px;text-transform:uppercase}td.k,th.k{text-align:left}
+tr.hl td{background:var(--hl);font-weight:700}
+.go{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 0;padding:12px 14px;border:1px solid var(--acc);border-radius:10px}
+.tl{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.tl .mn{flex:none;width:48px;font-weight:800;color:var(--acc)}.tl .ic{flex:none;width:22px;text-align:center}.tl.g{font-weight:700}
+.lu{display:grid;grid-template-columns:1fr 1fr;gap:16px}.lu div{font-size:15px;line-height:1.7}.lu b.h{display:block;color:var(--acc);margin-bottom:4px;font-size:16px}
+.spec{margin:16px 0 0;padding:14px 16px;border-radius:10px;background:#fff7e0;border:1px solid #f0c040;border-left:5px solid #d99a00;color:#3d2c00;font-size:15px;line-height:1.6}
+.spec b.hh{display:block;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#a36f00;margin-bottom:4px}
+@media(max-width:600px){.card{padding:14px}.score{gap:4px;padding:16px 6px}.score .t{font-size:15px}.score .r{font-size:30px}table{font-size:13px}th,td{padding:8px 3px}th.k,td.k{white-space:normal}.lu{grid-template-columns:1fr}}`;
+const TABJS=`<script>document.querySelectorAll('#tabs button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('.pn').forEach(function(p){p.classList.toggle('on',p.id===b.dataset.p)})})});<\/script>`;
+const DAYS=['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'];
+const MONTHS=['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'];
+function niceDate(s){const m=String(s).match(/(\d{2})\.(\d{2})\.(\d{4})/);if(!m)return s;const dt=new Date(+m[3],+m[2]-1,+m[1]);return `${DAYS[dt.getDay()]}, ${+m[1]}. ${MONTHS[+m[2]-1]} ${m[3]}.`;}
+function venueNice(v){const p=v.split(',').map(x=>x.trim());return p.length===2&&p[0].endsWith(p[1])?p[0]:v;}
+
+function render(m,b,txt,det,nxt,flat){
+  const sn=b.sn;
+  const scorers=side=>b.goals.filter(g=>g.side===side).map(g=>esc(sn[g.own?(side==='home'?'away':'home'):side](g.player))+(g.own?' (ag)':'')+' '+g.m.txt+(g.pen?' (pen.)':'')).join('<br>')||'&nbsp;';
+  const tl=[];
+  b.goals.forEach(g=>tl.push({k:g.m.key,html:`<div class="tl g"><span class="mn">${g.m.txt}</span><span class="ic">⚽</span><span>${g.score} ${esc(g.player)} (${esc(b.name[g.side])})${g.pen?', penal':''}${g.own?', autogol':''}</span></div>`}));
+  // žuti kartoni grupisani po minuti i timu
+  const yg={};b.cards.filter(c=>c.t==='y').forEach(c=>{const k=c.side+'|'+c.m.key;(yg[k]=yg[k]||{c,list:[]}).list.push(esc(sn[c.side](c.player)));});
+  Object.values(yg).forEach(({c,list})=>tl.push({k:c.m.key,html:`<div class="tl"><span class="mn">${c.m.txt}</span><span class="ic">🟨</span><span>${list.join(', ')} (${esc(b.name[c.side])})</span></div>`}));
+  b.cards.filter(c=>c.t!=='y').forEach(c=>tl.push({k:c.m.key+0.5,html:`<div class="tl g"><span class="mn">${c.m.txt}</span><span class="ic">🟥</span><span>${esc(sn[c.side](c.player))} (${esc(b.name[c.side])})${c.t==='red2'?', drugi žuti':''}</span></div>`}));
+  b.subList.forEach(s=>{const i=s.in.map(n=>esc(sn[s.side](n))),o=s.out.map(n=>esc(sn[s.side](n)));const j=a=>a.length>1?a.slice(0,-1).join(', ')+' i '+a[a.length-1]:a[0]||'';
+    tl.push({k:s.m.key+0.2,html:`<div class="tl"><span class="mn">${s.m.txt}</span><span class="ic">🔁</span><span>${esc(b.name[s.side])}: ${i.length>1?'ulaze':'ulazi'} ${j(i)}${o.length?', '+(o.length>1?'izlaze':'izlazi')+' '+j(o):''}</span></div>`});});
+  tl.sort((x,y)=>x.k-y.k);
+  // sastavi
+  const lu=side=>{
+    const t=m.T[side];const one={};b.subList.filter(s=>s.side===side&&s.in.length===1&&s.out.length===1).forEach(s=>{one[s.out[0]]=`od ${s.m.txt} ${sn[side](s.in[0])}`;});
+    const paired=new Set(Object.keys(one));
+    const st=t.start.map((p,i)=>esc(sn[side](p.name))+(p.cap?' (C)':'')+(one[p.name]?' ('+esc(one[p.name])+')':''));
+    const first=st.shift()||'';
+    const others=b.subList.filter(s=>s.side===side&&!(s.in.length===1&&s.out.length===1)).map(s=>s.in.map(n=>esc(sn[side](n))).join(', ')+' ('+s.m.txt+')');
+    return `<div><b class="h">${esc(b.name[side])}</b>${first} – ${st.join(', ')}${others.length?'<br>Ušli: '+others.join(', '):''}${t.coach?`<br><span class="meta">Trener: ${esc(t.coach)}</span>`:''}</div>`;
+  };
+  const paras=txt.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);
+  const p1=paras.map((x,i)=>`<p${i===0?' class="intro"':''}>${esc(x).replace(/\n/g,'<br>')}</p>`).join('\n  ');
+  const offRows=m.off.map(([k,v])=>`<tr><td class="k">${esc(k)}</td><td class="k">${esc(v)}</td></tr>`).join('');
+  const tbl=m.table.map(r=>`<tr${[m.home,m.away].map(x=>x.toLowerCase()).includes(r.team.toLowerCase())?' class="hl"':''}><td>${esc(r.pos)}</td><td class="k">${esc(r.team)}</td><td>${esc(r.u)}</td><td>${esc(r.gf)}:${esc(r.ga)}</td><td>${esc(r.pts)}</td></tr>`).join('\n');
+  const ht=`(${b.ht[0]}:${b.ht[1]})`;
+  const meta=[niceDate(m.date),m.time,venueNice(m.venue),m.att?m.att+' gledalaca':''].filter(Boolean).join(' · ');
+  const sec=(id,title,inner,on)=>flat?`<div class="tbh">${title}</div><section class="pn">${inner}</section>`:`<section id="${id}" class="pn${on?' on':''}">${inner}</section>`;
+  const body=`<div class="card">
+<div class="meta">IZVJEŠTAJ · ${esc(m.comp.toUpperCase())} · ${esc(m.round)}. KOLO</div>
+<h2 style="margin:0 0 4px;font-size:22px">${esc(m.home)} – ${esc(m.away)}</h2>
+<div class="meta">${esc(meta)}</div>
+<div class="score">
+  <div><div class="t">${esc(m.home)}</div><div class="sc">${scorers('home')}</div></div>
+  <div><div class="r">${m.hs}:${m.as}</div><div class="s">Kraj · ${ht}</div></div>
+  <div><div class="t">${esc(m.away)}</div><div class="sc">${scorers('away')}</div></div>
+</div>
+${flat?'':`<div class="sub" id="tabs">
+  <button type="button" class="on" data-p="p1">Utakmica</button>
+  <button type="button" data-p="p2">Tok utakmice</button>
+  <button type="button" data-p="p3">Sastavi</button>
+  <button type="button" data-p="p6">Sudije</button>
+</div>`}
+${sec('p1','Utakmica',`
+  ${p1}
+  ${det?`<div class="spec"><b class="hh">⚡ Detalj utakmice</b>${esc(det)}</div>`:''}
+  ${nxt?`<div class="go"><b>Na tabeli:</b><span>${esc(nxt)}</span></div>`:''}`,true)}
+${sec('p2','Tok utakmice',tl.map(x=>x.html).join('\n'))}
+${sec('p3','Sastavi',`<div class="lu">${lu('home')}${lu('away')}</div>`)}
+${sec('p6','Sudije',`<div class="tw"><table><thead><tr><th class="k">Uloga</th><th class="k">Ime</th></tr></thead><tbody>${offRows}</tbody></table></div>`)}
+${tbl?`<h3 style="margin:22px 0 8px">Tabela ${esc(m.comp)}</h3>
+<div class="tw"><table><thead><tr><th>#</th><th class="k">Tim</th><th>U</th><th>Golovi</th><th>Bod.</th></tr></thead><tbody>
+${tbl}
+</tbody></table></div>
+<p class="meta">Zvanična tabela FSCG nakon ${esc(m.round)}. kola.</p>`:''}
+</div>`;
+  if(flat){
+    // bez JavaScripta i sa stilovima samo unutar .rn (ne kvari ostatak sajta)
+    const scoped=(`.rn{--bg:#fff4f8;--card:#fff;--ink:#1d1520;--mut:#7a6772;--line:#f1d3e0;--acc:#e0156f;--soft:#f8f9fa;--hl:rgba(224,21,111,.12);max-width:960px;margin:0 auto;color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:left}.rn *{box-sizing:border-box}\n`+
+      CSS_COMMON.replace(/(^|\})\s*([^{}@]+)\{/g,(all,br,sel)=>br+sel.split(',').map(x=>'.rn '+x.trim()).join(',')+'{').replace(/@media\(max-width:600px\)\{([\s\S]*)\}$/,(a,inner)=>'@media(max-width:600px){'+inner.replace(/(^|\})\s*([^{}]+)\{/g,(q,br,sel)=>br+sel.split(',').map(x=>'.rn '+x.trim()).join(',')+'{')+'}'));
+    return `<style>\n${scoped}\n</style>\n<div class="rn"><div class="flat">${body}</div></div>`;
+  }
+  return `<!DOCTYPE html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(m.home)} – ${esc(m.away)} · Izvještaj ${esc(m.round)}. kola ${esc(m.comp)}</title>
+<style>
+${CSS_TABS}
+${CSS_COMMON}
+</style>
+</head>
+<body>
+<main>
+${body}
+</main>
+${TABJS}
+</body>
+</html>`;
+}
+
+/* ---------- KONTROLE ---------- */
+let B=null;
+function out(flat){return render(M,B,$('txt').value,$('det').value.trim(),$('nxt').value.trim(),flat);}
+function refresh(){$('prev').srcdoc=out(false);}
+$('go').onclick=function(){
+  $('msg').textContent='';$('msg').className='msg';
+  try{
+    M=parse($('src').value);B=build(M);
+    const a=autoText(M,B);$('txt').value=a.txt;$('det').value=a.det;$('nxt').value=a.nxt;
+    $('edit').hidden=false;refresh();
+    $('msg').textContent=`✔ ${M.home} ${M.hs}:${M.as} ${M.away} — ${B.goals.length} gol(ova), ${B.cards.length} karton(a), ${B.subList.length} izmjena. Provjeri tekst pa kopiraj.`;$('msg').className='msg ok';
+    if(B.goals.length!==M.hs+M.as){$('msg').textContent+=' ⚠ Broj golova u zapisniku ('+B.goals.length+') ne odgovara rezultatu — provjeri!';$('msg').className='msg err';}
+  }catch(e){$('msg').textContent='✖ '+e.message;$('msg').className='msg err';}
+};
+$('refresh').onclick=refresh;
+['txt','det','nxt'].forEach(id=>$(id).addEventListener('input',()=>{clearTimeout(window.__t);window.__t=setTimeout(refresh,500);}));
+async function copy(t){try{await navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}$('msg2').textContent='✔ Kopirano — zalijepi gdje treba.';$('msg2').className='msg ok';}
+$('copyTabs').onclick=()=>copy(out(false));
+$('copyFlat').onclick=()=>copy(out(true));
+$('dl').onclick=function(){const blob=new Blob([out(false)],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=('izvjestaj-'+M.home+'-'+M.away).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'dj').replace(/[^a-z0-9]+/g,'-')+'.html';a.click();};
+window.__RL={parse,build,autoText,render};
+})();
+</script>
+</body>
+</html>
