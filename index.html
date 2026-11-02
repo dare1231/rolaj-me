@@ -1359,6 +1359,61 @@ function googleTranslateElementInit(){
 .gx-logo{font:900 42px Inter;color:#C8102E}.gx-logo b{color:#C8102E}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<style id="rolaj-dorade-nov26">
+/* ===== Dorade (nov 2026): centrirani naslovi, razmak od ivica, posljednja utakmica ===== */
+#homeScroll{padding-left:14px;padding-right:14px}
+.rl-welcome{flex-direction:column;align-items:center!important;justify-content:center;text-align:center;gap:8px;margin:6px 0 22px}
+.rl-welcome>div{display:flex;flex-direction:column;align-items:center}
+.rl-welcome h1{text-align:center;margin-left:auto;margin-right:auto}
+.rl-welcome h1 span{display:block}
+.rl-welcome p{max-width:330px;margin:0 auto!important;text-align:center}
+.rl-date{text-align:center}
+/* Svi naslovi sekcija na sredinu, link ispod naslova */
+.rl-panel-head,.rl-section-title,.cx-head,.ch-sec,.section-header,.rl-round-story-head,.rl-team-round-head{flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:6px}
+.rl-panel-head>div,.rl-section-title>div{display:flex;flex-direction:column;align-items:center;text-align:center}
+.section-title,.cx-head h3,.ch-sec h3,.rl-panel-head h2,.rl-section-title h2{text-align:center!important}
+.cx-head small{text-align:center!important}
+/* Postava: igrač je klikabilan */
+.cx-pl{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cx-pl:active{transform:scale(.95)}
+/* Forma: ime protivnika ispod grba */
+.cx-on{font:700 9.5px/1.1 var(--font);max-width:100%;padding:0 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary);text-align:center}
+/* Posljednja utakmica */
+.ch-last .ch-score{font-size:46px;letter-spacing:-1px;white-space:nowrap}
+.ch-last .ch-score i{font-style:normal;opacity:.55;margin:0 4px}
+.ch-out{font-weight:800}
+.ch-out.w{background:#22c55e!important;color:#052e14}
+.ch-out.l{background:#ef4444!important;color:#fff}
+.ch-out.d{background:rgba(255,255,255,.88)!important;color:#1f2937}
+.ch-goals{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--ch-line);padding-top:10px;margin-top:2px}
+.ch-goals ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;align-content:start;min-width:0}
+.ch-goals li{display:flex;gap:6px;align-items:center;font:600 13px/1.2 var(--font);min-width:0}
+.ch-goals ul.r li{flex-direction:row-reverse;text-align:right}
+.ch-goals .bl{font-size:11px;flex:none}
+.ch-goals .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-goals li b{flex:none;font-weight:800;opacity:.8;font-variant-numeric:tabular-nums}
+.ch-teams{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.ch-card .ch-badge{background:#fff!important}
+.ch-team b{font-size:clamp(13px,4vw,17px)!important;overflow-wrap:normal!important;word-break:normal;hyphens:none;line-height:1.1}
+@media (max-width:380px){.ch-badge{width:48px;height:48px}.ch-badge img{width:34px;height:34px}.ch-last .ch-score{font-size:40px}}
+/* Tabele na telefonu: puno ime tima, bez izlaska van ekrana; forma ispod imena */
+.st-logo{overflow:hidden;background:#fff!important}
+.st-logo img{width:18px;height:18px;object-fit:contain}
+.st-form-m{display:none}
+@media (max-width:600px){
+  .standings-table{margin-left:12px!important;margin-right:12px!important}
+  .st-row{grid-template-columns:24px 24px minmax(0,1fr) 22px 20px 20px 20px 30px 28px!important;column-gap:3px;padding:9px 8px!important;font-size:13px!important}
+  .st-row>div:nth-child(8),.st-row>div:nth-child(9),.st-row>div:nth-child(12){display:none!important}
+  .st-team{display:flex;flex-direction:column;align-items:flex-start!important;gap:3px;overflow:visible!important}
+  .st-team-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.15;font-size:13.5px!important;word-break:normal;overflow-wrap:anywhere}
+  .st-form-m{display:flex;gap:3px}
+  .st-form-m .form-dot{width:7px;height:7px;margin:0}
+  .st-row>div:not(.st-team){text-align:center}
+  .st-header>div:nth-child(3){text-align:left!important}
+  .st-row .pos-medal,.st-row .pos-plain{transform:scale(.85)}
+  .stats-row{max-width:100%;overflow-x:auto}
+}
+</style>
 </head>
 <body>
 <script>if(/Android/i.test(navigator.userAgent))document.documentElement.classList.add('is-android');</script>
@@ -6121,6 +6176,8 @@ function openSeniorClubProfile(name,league,skipUrl){
 }
 function renderSeniorClubProfile(name,league){
   const compFilter=league==='2cfl'?'2. CFL':'1. CFL';
+  try{let st=document.getElementById('clubPageTheme');if(!st){st=document.createElement('style');st.id='clubPageTheme';document.head.appendChild(st);}
+    const tc=clubColorsOn()?clubThemeFor(name):null;st.textContent=tc?clubPaletteCss('#screen-club-profile',tc,'#screen-club-profile,#screen-club-profile .scroll-area'):'';}catch(e){}
   document.getElementById('clubProfileLogo').innerHTML=teamLogoImg(name);
   document.getElementById('clubProfileName').textContent=name;
   document.getElementById('clubProfileLeague').textContent=compFilter;
@@ -7583,6 +7640,8 @@ function renderRlPlayersList(){
   }).join('');
 }
 async function showRlPlayerStats(name){
+  try{const p0=PLAYERS.find(x=>x.name===name),c0=p0?p0.club:null;
+    if(typeof openPlayerByName==='function'&&openPlayerByName(name,c0,c0?(clubLeagueKey(c0)==='2cfl'?'2. CFL':'1. CFL'):undefined))return;}catch(e){console.log('profil igrača',e.message)}
   const pl=PLAYERS.find(x=>x.name===name);
   const league=pl?clubLeagueKey(pl.club):'1cfl';
   const scorerEntry=computeTopScorers(league).find(s=>s.name===name);
@@ -7771,7 +7830,7 @@ function cxXIHtml(club,league){
   // Popuna: igrač sa najviše startova među onima bez upisane pozicije ili sa susjedne pozicije; golman se ne pomjera
   const near={FWD:['MID','DEF'],MID:['FWD','DEF'],DEF:['MID','FWD']};
   ['FWD','MID','DEF'].forEach(k=>{while(pick[k].length<need[k]){const f=L.find(p=>!used.has(p.name)&&(!p.pos||near[k].includes(p.pos)));if(!f)break;pick[k].push(f);used.add(f.name);}});
-  const cell=p=>{const ph=rpPhotoFor(p.it,club);return '<div class="cx-pl"><span class="a">'+(ph?'<img loading="lazy" src="'+cxEsc(ph)+'" alt="">':cxEsc(cxIni(p.name)))+'</span><b>'+cxEsc(p.name.split(' ').slice(-1)[0])+'</b><small>'+p.starts+'/'+p.apps+'</small></div>';};
+  const cell=p=>{const ph=rpPhotoFor(p.it,club);return '<div class="cx-pl" role="button" onclick="openPlayerByName(this.dataset.n,this.dataset.c,this.dataset.k)" data-n="'+cxEsc(p.name)+'" data-c="'+cxEsc(club)+'" data-k="'+comp+'"><span class="a">'+(ph?'<img loading="lazy" src="'+cxEsc(ph)+'" alt="">':cxEsc(cxIni(p.name)))+'</span><b>'+cxEsc(p.name.split(' ').slice(-1)[0])+'</b><small>'+p.starts+'/'+p.apps+'</small></div>';};
   const row=k=>'<div class="cx-line">'+pick[k].map(cell).join('')+'</div>';
   const t=clubThemeFor(club);const v=t?'--cx-pitch1:'+ctMix('#12351f',t[0],.18)+';--cx-pitch2:'+ctMix('#0b2415',t[0],.12):'';
   return '<div class="cx-panel"><div class="cx-head"><h3>Najstandardnija postava</h3><small>4-3-3 · od starta / nastupi</small></div><div class="cx-pitch" style="'+v+'">'+row('FWD')+row('MID')+row('DEF')+row('GK')+'</div></div>';
@@ -7816,7 +7875,7 @@ function clubCenterHtml(club,league,home){
   const res=clubLastResults(club,comp);
   const tiles=res.map(r=>{const home=r.home===club,gf=home?r.homeScore:r.awayScore,ga=home?r.awayScore:r.homeScore,o=home?r.away:r.home;
     const c=gf>ga?'w':gf<ga?'l':'d';
-    return '<div class="cx-tile '+c+'" title="'+cxEsc(r.home+' '+r.homeScore+':'+r.awayScore+' '+r.away)+'"><span class="cx-res">'+(c==='w'?'P':c==='l'?'I':'N')+'</span><span class="cx-op">'+teamLogoImg(o)+'</span><span class="cx-sc">'+gf+':'+ga+'</span><span class="cx-ha">'+(home?'DOMA':'GOST')+'</span></div>';}).join('');
+    return '<div class="cx-tile '+c+'" title="'+cxEsc(r.home+' '+r.homeScore+':'+r.awayScore+' '+r.away)+'"><span class="cx-res">'+(c==='w'?'P':c==='l'?'I':'N')+'</span><span class="cx-op">'+teamLogoImg(o)+'</span><span class="cx-on">'+cxEsc(o)+'</span><span class="cx-sc">'+gf+':'+ga+'</span><span class="cx-ha">'+(home?'DOMA':'GOST')+'</span></div>';}).join('');
   const sc=clubScorers(club,league),max=sc.length?sc[0].goals:1;
   const v=t?'--cx-1:'+t[0]+';--cx-2:'+ctMix(t[0],'#000000',.45):'';
   const rows=sc.map((p,i)=>{const ph=cxPhoto(p.name,club),ini=p.name.split(' ').map(x=>x[0]).slice(0,2).join('');
@@ -7825,6 +7884,38 @@ function clubCenterHtml(club,league,home){
   const forma='<div class="cx-panel"><div class="cx-head"><h3>Forma</h3><small>zadnjih '+(res.length||5)+' · najnovije desno</small></div>'+(tiles?'<div class="cx-form">'+tiles+'</div>':'<div class="cx-empty">Još nema odigranih utakmica.</div>')+'</div>'
    ;const strijelci='<div class="cx-panel" style="'+v+'"><div class="cx-head"><h3>Najbolji strijelci</h3><small>'+comp+' · sezona</small></div>'+(rows?'<div class="cx-sco">'+rows+'</div>':'<div class="cx-empty">Još nema strijelaca ovog kluba.</div>')+'</div>';
   return '<div style="'+soft+'">'+(home?cxNewsHtml(club):'')+cxCoachHtml(club)+(home?cxFavsHtml():'')+forma+cxXIHtml(club,league)+cxTableHtml(club,league)+strijelci+(home?'':cxNewsHtml(club))+'</div>';
+}
+// Golovi jednog meča iz unosa uživo (strana = ko je povećao rezultat)
+function chMatchGoals(r){
+  const nf=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  const raw=(window.ROLAJ_LIVE_RAW||[]).filter(e=>e.event_type==='gol');
+  let L=raw.filter(e=>e.match_id&&e.match_id===r.id);
+  if(!L.length)L=raw.filter(e=>(e.comp||'1. CFL')===r.comp&&nf(e.home)===nf(r.home)&&nf(e.away)===nf(r.away));
+  if(!L.length&&Array.isArray(r.events))L=r.events.filter(e=>e&&(e.event_type==='gol'||e.type==='gol'));
+  L=L.slice().sort((x,y)=>(x.minute||0)-(y.minute||0)||String(x.created_at||'').localeCompare(String(y.created_at||'')));
+  let ph=0,pa=0;const out=[];
+  L.forEach(e=>{const h=e.home_score|0,a=e.away_score|0;const side=h>ph?'h':a>pa?'a':null;ph=Math.max(ph,h);pa=Math.max(pa,a);
+    const n=e.scorer||(typeof extractScorerFromText==='function'?extractScorerFromText(e.text,r.home,r.away):null);
+    if(side)out.push({side,min:e.minute||null,name:n||'Gol'});});
+  return out;
+}
+function chLastMatchHtml(club,comp){
+  const res=clubLastResults(club,comp);const r=res[res.length-1];if(!r)return '';
+  const t=clubThemeFor(club)||['#d6001c'];const home=r.home===club,gf=home?r.homeScore:r.awayScore,ga=home?r.awayScore:r.homeScore;
+  const out=gf>ga?['w','Pobjeda']:gf<ga?['l','Poraz']:['d','Neriješeno'];
+  const g=chMatchGoals(r);
+  const short=n=>{const w=String(n).trim().split(/\s+/);return w.length>1?w[0][0]+'. '+w.slice(1).join(' '):n;};
+  const col=side=>g.filter(x=>x.side===side).map(x=>'<li><span class="bl">⚽</span><span class="nm">'+cxEsc(short(x.name))+'</span>'+(x.min?'<b>'+x.min+'\'</b>':'')+'</li>').join('');
+  const gh=col('h'),gaH=col('a');
+  const d=chParseDate(r.date);const ds=d?d.getDate()+'.'+(d.getMonth()+1)+'.':'';
+  const id=String(r.id||'').replace(/'/g,"\\'");
+  return '<div class="ch-card ch-last" style="'+clubCardVars(t)+'" onclick="openMatchDetail(\'result\',\''+id+'\')">'
+    +'<div class="ch-row"><span class="ch-pill">Posljednja utakmica</span><span class="ch-pill ch-out '+out[0]+'">'+out[1]+'</span></div>'
+    +'<div class="ch-teams"><div class="ch-team"><div class="ch-badge">'+teamLogoImg(r.home)+'</div><b>'+cxEsc(r.home)+'</b></div>'
+    +'<div class="ch-ko"><div class="t ch-score">'+r.homeScore+'<i>:</i>'+r.awayScore+'</div><div class="d">'+(r.round?r.round+'. kolo':'')+(ds?(r.round?' · ':'')+ds:'')+'</div></div>'
+    +'<div class="ch-team"><div class="ch-badge">'+teamLogoImg(r.away)+'</div><b>'+cxEsc(r.away)+'</b></div></div>'
+    +((gh||gaH)?'<div class="ch-goals"><ul>'+gh+'</ul><ul class="r">'+gaH+'</ul></div>':(r.homeScore+r.awayScore>0?'':'<div class="ch-meta" style="justify-content:center"><span>Bez golova</span></div>'))
+    +'<div class="ch-meta" style="justify-content:center"><span>Detalji utakmice →</span></div></div>';
 }
 function clubPushOn(club){try{return ('Notification' in window)&&Notification.permission==='granted'&&!!safeGet('rolajme_push_endpoint')&&favClubs.includes(club);}catch(e){return false;}}
 function clubPushBtn(club){const on=clubPushOn(club),q=String(club).replace(/'/g,"\\'");
@@ -7881,6 +7972,25 @@ function clubCardVars(t){
   const seed=t[0],light=ctLum(seed)>.42;
   return `--ch-1:${seed};--ch-2:${ctMix(seed,'#000000',light?.18:.45)};--ch-text:${light?'#15120a':'#ffffff'};--ch-chip:${light?'rgba(0,0,0,.12)':'rgba(255,255,255,.18)'};--ch-line:${light?'rgba(0,0,0,.14)':'rgba(255,255,255,.2)'};`;
 }
+/* Cijela podloga u boji kluba; tekst bijel ili taman prema svjetlini boje (važi i za svijetlu i za tamnu temu) */
+function clubPaletteCss(sc,t,bgSel){
+  const[seed,dp,dop,lp,lop]=t;const bright=ctLum(seed)>.42;
+  const bg=bright?seed:ctMix(seed,'#000000',.2);
+  const surf=bright?ctMix(seed,'#000000',.09):ctMix(seed,'#000000',.42);
+  const elev=bright?ctMix(seed,'#000000',.16):ctMix(seed,'#000000',.54);
+  const tx=bright?'#15120a':'#ffffff',rgb=bright?'21,18,10':'255,255,255';
+  const acc=bright?lp:dp,onAcc=bright?lop:dop;
+  const line=bright?'rgba(0,0,0,.16)':'rgba(255,255,255,.16)';
+  const S=sc.split(',').map(x=>x.trim());const all=(suf)=>S.map(x=>x+suf).join(',');
+  return `${all('')},${all('[data-theme]')}{--primary:${acc};--primary-dark:${ctMix(acc,'#000000',.2)};--primary-glow:${ctA(seed,.35)};--lime:${acc};--gold:${acc};--gold-dark:${ctMix(acc,'#000000',.2)};--gold-glow:${ctA(seed,.3)};--accent:${acc};--on-primary:${onAcc};
+--bg:${bg};--surface:${surf};--surface-elevated:${elev};--surface-glass:${ctA(bg,.94)};--border:${line};--border-light:${bright?'rgba(0,0,0,.24)':'rgba(255,255,255,.24)'};--line:${line};
+--text-primary:${tx};--text-secondary:rgba(${rgb},.82);--text-tertiary:rgba(${rgb},.64);--muted:rgba(${rgb},.78);--muted-2:rgba(${rgb},.66);--white:${tx}}
+${bgSel}{background:radial-gradient(130% 45% at 50% -8%,${ctMix(seed,'#ffffff',bright?0:.12)},transparent 75%),var(--bg)!important;color:${tx}}
+${all(' .rl-panel')},${all(' .cx-panel')},${all(' .match-card')},${all(' .player-card')},${all(' .rl-overview')},${all(' .rl-player-card')},${all(' .rl-manager')},${all(' .rl-selected-club')}{background:linear-gradient(160deg,${ctA(surf,.92)},${ctA(elev,.96)})!important;border-color:${line}!important;color:${tx}}
+${all(' .header')}{background:${ctA(bg,.94)}!important;border-color:${line}!important}
+${all(' .cx-tile')}{background:${ctA(bright?'#000000':'#ffffff',bright?.08:.08)}!important}
+${all(' .ch-card')}{box-shadow:0 18px 40px -20px rgba(0,0,0,.55),inset 0 0 0 1px ${line}}`;
+}
 function applyClubTheme(){
   let st=document.getElementById('clubThemeStyle');
   const club=favClubs&&favClubs[0];const t=clubColorsOn()&&!(hasPersonal()&&homeMode()==='sve')?clubThemeFor(club):null;
@@ -7888,13 +7998,7 @@ function applyClubTheme(){
   if(!t){if(st)st.textContent='';document.documentElement.removeAttribute('data-club');if(wm)wm.remove();return;}
   if(!st){st=document.createElement('style');st.id='clubThemeStyle';document.head.appendChild(st);}
   const[seed,dp,dop,lp,lop]=t;
-  const dS=ctMix('#15181D',seed,.07),dB=ctMix('#0B0D10',seed,.06),lB=ctMix('#F5F6F8',seed,.05);
-  st.textContent=`:root[data-club]:not([data-theme="light"]){--primary:${dp};--primary-dark:${ctMix(dp,'#000000',.2)};--primary-glow:${ctA(seed,.32)};--lime:${dp};--gold:${dp};--gold-dark:${ctMix(dp,'#000000',.2)};--gold-glow:${ctA(seed,.25)};--on-primary:${dop};
-  --bg:${dB};--surface:${dS};--surface-elevated:${ctMix('#1E2229',seed,.08)};--surface-glass:${ctA(dS,.94)};--border:${ctMix('#272B32',seed,.1)};--border-light:${ctMix('#343943',seed,.12)};--line:${ctMix('#272B32',seed,.1)}}
-:root[data-club][data-theme="light"]{--primary:${lp};--primary-dark:${ctMix(lp,'#000000',.2)};--primary-glow:${ctA(seed,.18)};--lime:${lp};--gold:${lp};--gold-dark:${ctMix(lp,'#000000',.2)};--accent:${lp};--on-primary:${lop};
-  --bg:${lB};--surface:#FFFFFF;--surface-elevated:${ctMix('#F1F3F6',seed,.06)};--surface-glass:${ctA(lB,.96)};--border:${ctMix('#E3E7EC',seed,.12)};--border-light:${ctMix('#D5DBE2',seed,.14)};--line:${ctMix('#E3E7EC',seed,.12)}}
-:root[data-club][data-theme="light"] .rl-top-story,:root[data-club][data-theme="light"] .hero-news-content,:root[data-club][data-theme="light"] .featured-overlay,:root[data-club][data-theme="light"] .rl-story-content{--primary:${dp};--lime:${dp};--gold:${dp}}
-:root[data-club] body{background:radial-gradient(120% 40% at 50% -8%,${ctA(seed,.22)},transparent 70%),var(--bg)}`;
+  st.textContent=clubPaletteCss(':root[data-club]',t,':root[data-club] body,:root[data-club] #app,:root[data-club] .screen');
   document.documentElement.setAttribute('data-club',club);
   const logo=rlClubLogoUrl(club);
   if(logo){if(!wm){wm=document.createElement('img');wm.id='clubWm';wm.className='club-wm';wm.alt='';wm.setAttribute('aria-hidden','true');document.body.appendChild(wm);}wm.src=logo;}
@@ -7956,7 +8060,8 @@ function renderRlClubHero(){
   }else{
     mid=`<div class="ch-row"><span class="ch-pill">Tvoj klub · ${comp}</span></div><div class="ch-teams" style="grid-template-columns:auto 1fr"><div class="ch-badge">${teamLogoImg(club)}</div><b style="font:800 30px/1 var(--font-display);text-transform:uppercase">${esc(club)}</b></div>${stats}<div class="ch-actions">${clubPushBtn(club)}</div>`;
   }
-  wrap.innerHTML=`<div class="ch-card" style="${clubCardVars(t)}" onclick="openSeniorClubProfile('${q}','${league}')">${logo?`<img class="ch-wm" src="${esc(logo)}" alt="" aria-hidden="true">`:''}${mid}</div>`;
+  let last='';try{last=chLastMatchHtml(club,comp);}catch(e){console.log('zadnja utakmica',e.message)}
+  wrap.innerHTML=`<div class="ch-card" style="${clubCardVars(t)}" onclick="openSeniorClubProfile('${q}','${league}')">${logo?`<img class="ch-wm" src="${esc(logo)}" alt="" aria-hidden="true">`:''}${mid}</div>`+last;
   // Igrači tvog kluba (ista kartica igrača kao na profilu kluba)
   if(pw){pw.hidden=false;const h=document.getElementById('rlClubPlayersTitle');if(h)h.textContent='Igrači · '+club;
     const a=document.getElementById('rlClubPlayersAll');if(a)a.onclick=()=>openSeniorClubProfile(club,league);
@@ -10376,7 +10481,7 @@ function renderStandings(league){
     }
     const pd=row.pos<=3?`<div class="pos-medal pos-${row.pos}">${row.pos}</div>`:`<div class="pos-plain">${row.pos}</div>`;
     const formHtml=(row.form||[]).slice(-5).map(f=>`<span class="form-dot form-${f.toLowerCase()}"></span>`).join('');
-    html+=`<div class="st-row ${cls}">${pd}<div class="st-logo">${row.team.charAt(0)}</div><div class="st-team"><span class="st-team-name">${row.team}</span></div><div>${row.ou}</div><div>${row.p}</div><div>${row.n}</div><div>${row.i}</div><div>${row.dg}</div><div>${row.pg}</div><div class="st-gr ${row.gr>0?'pos':row.gr<0?'neg':''}">${row.gr>0?'+'+row.gr:row.gr}</div><div class="st-pts">${row.b}</div><div>${formHtml}</div></div>`;
+    html+=`<div class="st-row ${cls}">${pd}<div class="st-logo">${teamLogoImg(row.team)}</div><div class="st-team"><span class="st-team-name">${row.team}</span>${formHtml?`<span class="st-form-m">${formHtml}</span>`:""}</div><div>${row.ou}</div><div>${row.p}</div><div>${row.n}</div><div>${row.i}</div><div>${row.dg}</div><div>${row.pg}</div><div class="st-gr ${row.gr>0?'pos':row.gr<0?'neg':''}">${row.gr>0?'+'+row.gr:row.gr}</div><div class="st-pts">${row.b}</div><div>${formHtml}</div></div>`;
   });
   table.innerHTML=html;
 
@@ -11264,7 +11369,7 @@ function hsBuildItems(){
     let ph=null;try{ph=getPlayerPhoto(name);}catch(e){}
     const latest=(news||[]).find(n=>hsNewsMentions(n,name));
     const last=String(name).trim().split(/\s+/).slice(-1)[0];
-    items.push({key:'player:'+name,label:last,emoji:'👤',image:ph?('https://wsrv.nl/?url='+encodeURIComponent(ph)+'&w=160&h=160&fit=cover&a=top&output=webp&q=75'):'',badge:'⭐',version:latest?String(latest.id):'',action:latest?{type:'article',id:latest.id}:{type:'nav',to:'moj-feed'}});
+    items.push({key:'player:'+name,label:last,emoji:'👤',image:ph?('https://wsrv.nl/?url='+encodeURIComponent(ph)+'&w=160&h=160&fit=cover&a=top&output=webp&q=75'):'',badge:'⭐',version:latest?String(latest.id):'',action:{type:'player',name:name,newsId:latest?latest.id:null}});
   });
   // 2) 5 najnovijih vijesti sa fotografijom (umanjena slika preko wsrv.nl, da se štedi prenos baze)
   const hsThumb=u=>u?('https://wsrv.nl/?url='+encodeURIComponent(u)+'&w=160&h=160&fit=cover&a=top&output=webp&q=75'):'';
@@ -11317,6 +11422,10 @@ function hsOpen(key){
     const l=(STANDINGS_TEAMS['1cfl']||[]).includes(a.name)?'1cfl':((STANDINGS_TEAMS['2cfl']||[]).includes(a.name)?'2cfl':null);
     if(l)openSeniorClubProfile(a.name,l);else openClubSchedule(a.name);
     return;
+  }
+  if(a.type==='player'){
+    if(it.isNew&&a.newsId){openArticle(a.newsId);return;}
+    showRlPlayerStats(a.name);return;
   }
   if(a.type==='sheet')hsOpenSheet(a.id);
 }
